@@ -1,5 +1,13 @@
 import { Link } from '@inertiajs/react';
-import { BookOpen, FolderGit2, LayoutGrid } from 'lucide-react';
+import {
+    BookOpen,
+    ClipboardList,
+    Database,
+    FileText,
+    FolderGit2,
+    LayoutGrid,
+    UserCog,
+} from 'lucide-react';
 import AppLogo from '@/components/app-logo';
 import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
@@ -21,6 +29,26 @@ const mainNavItems: NavItem[] = [
         title: 'Dashboard',
         href: dashboard(),
         icon: LayoutGrid,
+    },
+    {
+        title: 'RAB Project',
+        href: '/dashboard/rab-project',
+        icon: FileText,
+    },
+    {
+        title: 'Pengajuan Pembelian',
+        href: '/dashboard/pengajuan-pembelian',
+        icon: ClipboardList,
+    },
+    {
+        title: 'Master Data',
+        href: '/dashboard/master-data',
+        icon: Database,
+    },
+    {
+        title: 'User Management',
+        href: '/dashboard/user-management',
+        icon: UserCog,
     },
 ];
 

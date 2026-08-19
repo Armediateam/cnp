@@ -4,16 +4,32 @@ import { TooltipProvider } from '@/components/ui/tooltip';
 import { initializeTheme } from '@/hooks/use-appearance';
 import AppLayout from '@/layouts/app-layout';
 import AuthLayout from '@/layouts/auth-layout';
+import HomeLayout from '@/layouts/home-layout';
 import SettingsLayout from '@/layouts/settings/layout';
 
-const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
+const appName = 'PT Citra Nusantara Propertindo';
 
 createInertiaApp({
     title: (title) => (title ? `${title} - ${appName}` : appName),
     layout: (name) => {
         switch (true) {
             case name === 'welcome':
-                return null;
+            case [
+                'ongkir',
+                'biaya',
+                'form-beli',
+                'tanya-jawab',
+                'kontak',
+                'rumah-citra-nusantara',
+                'rumah-sudah-terbangun',
+                'tahapan-pembangunan-rumah',
+                'profil-perusahaan',
+                'keuntungan-menggunakan-jasa-kami',
+                'alur-kerjasama-pesanan',
+                'spesifikasi-material-yang-dipakai',
+                'skema-pembayaran',
+            ].includes(name):
+                return HomeLayout;
             case name.startsWith('auth/'):
                 return AuthLayout;
             case name.startsWith('settings/'):

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Database\Factories\RabProjectFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -20,6 +21,12 @@ use Illuminate\Support\Carbon;
     'user_id',
     'customer_name',
     'village_name',
+    'rab_number',
+    'rab_date',
+    'project_name',
+    'project_address',
+    'floor_plan_files',
+    'facade_files',
     'length',
     'width',
     'building_area',
@@ -44,7 +51,7 @@ use Illuminate\Support\Carbon;
 ])]
 class RabProject extends Model
 {
-    /** @use HasFactory<\Database\Factories\RabProjectFactory> */
+    /** @use HasFactory<RabProjectFactory> */
     use HasFactory;
 
     /**
@@ -56,6 +63,9 @@ class RabProject extends Model
     {
         return [
             'length' => 'decimal:2',
+            'rab_date' => 'date',
+            'floor_plan_files' => 'array',
+            'facade_files' => 'array',
             'width' => 'decimal:2',
             'building_area' => 'decimal:2',
             'price_per_meter' => 'integer',

@@ -40,7 +40,10 @@ class UserManagementController extends Controller
             'password' => ['required', 'string', 'min:8'],
         ]);
 
-        User::create($validated);
+        User::create([
+            ...$validated,
+            'email_verified_at' => now(),
+        ]);
 
         Inertia::flash('toast', ['type' => 'success', 'message' => 'User berhasil dibuat.']);
 

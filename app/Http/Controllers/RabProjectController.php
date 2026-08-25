@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\MasterDataItem;
 use App\Models\RabProject;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -16,6 +18,24 @@ class RabProjectController extends Controller
     public function index(): Response
     {
         return Inertia::render('rab-project', [
+            'masterDataItems' => MasterDataItem::query()
+                ->where('status', 'Active')
+                ->whereIn('category', [
+                    'structure_specification',
+                    'request_cost',
+                    'finishing_cost',
+                    'building_price',
+                    'region',
+                ])
+                ->orderBy('name')
+                ->get()
+                ->map(fn (MasterDataItem $item): array => [
+                    'id' => $item->id,
+                    'category' => $item->category,
+                    'name' => $item->name,
+                    'value' => $item->value,
+                    'unit' => $item->unit,
+                ]),
             'rabProjects' => RabProject::query()
                 ->latest()
                 ->get()
@@ -23,6 +43,12 @@ class RabProjectController extends Controller
                     'id' => $project->id,
                     'customer' => $project->customer_name,
                     'village' => $project->village_name,
+                    'rabNumber' => $project->rab_number,
+                    'rabDate' => $project->rab_date?->format('Y-m-d'),
+                    'projectName' => $project->project_name,
+                    'projectAddress' => $project->project_address,
+                    'floorPlanFiles' => $project->floor_plan_files ?? [],
+                    'facadeFiles' => $project->facade_files ?? [],
                     'area' => rtrim(rtrim((string) $project->building_area, '0'), '.').' m2',
                     'total' => $project->grand_total,
                     'status' => $project->status,
@@ -57,6 +83,14 @@ class RabProjectController extends Controller
         $validated = $request->validate([
             'customer_name' => ['required', 'string', 'max:255'],
             'village_name' => ['required', 'string', 'max:255'],
+            'rab_number' => ['nullable', 'string', 'max:255'],
+            'rab_date' => ['nullable', 'date'],
+            'project_name' => ['nullable', 'string', 'max:255'],
+            'project_address' => ['nullable', 'string', 'max:2000'],
+            'floor_plan_files' => ['nullable', 'array'],
+            'floor_plan_files.*' => ['file', 'mimes:jpg,jpeg,png,pdf', 'max:10240'],
+            'facade_files' => ['nullable', 'array'],
+            'facade_files.*' => ['file', 'mimes:jpg,jpeg,png,pdf', 'max:10240'],
             'length' => ['nullable', 'numeric', 'min:0'],
             'width' => ['nullable', 'numeric', 'min:0'],
             'building_area' => ['nullable', 'numeric', 'min:0'],
@@ -65,6 +99,9 @@ class RabProjectController extends Controller
             'specification' => ['nullable', 'string', 'max:255'],
             'request_items' => ['nullable', 'array'],
             'request_items.*.label' => ['required_with:request_items', 'string', 'max:255'],
+            'request_items.*.unit' => ['nullable', 'string', 'max:50'],
+            'request_items.*.quantity' => ['nullable', 'numeric', 'min:0'],
+            'request_items.*.unit_price' => ['nullable', 'numeric', 'min:0'],
             'request_items.*.cost' => ['required_with:request_items', 'numeric', 'min:0'],
             'request_items_total' => ['nullable', 'numeric', 'min:0'],
             'request_shipping_cost' => ['nullable', 'numeric', 'min:0'],
@@ -74,6 +111,9 @@ class RabProjectController extends Controller
             'request_installments' => ['nullable', 'integer', 'min:0'],
             'finishing_items' => ['nullable', 'array'],
             'finishing_items.*.label' => ['required_with:finishing_items', 'string', 'max:255'],
+            'finishing_items.*.unit' => ['nullable', 'string', 'max:50'],
+            'finishing_items.*.quantity' => ['nullable', 'numeric', 'min:0'],
+            'finishing_items.*.unit_price' => ['nullable', 'numeric', 'min:0'],
             'finishing_items.*.cost' => ['required_with:finishing_items', 'numeric', 'min:0'],
             'finishing_items_total' => ['nullable', 'numeric', 'min:0'],
             'finishing_shipping_cost' => ['nullable', 'numeric', 'min:0'],
@@ -97,10 +137,15 @@ class RabProjectController extends Controller
             $validated[$moneyField] = (int) round($validated[$moneyField] ?? 0);
         }
 
+        unset($validated['floor_plan_files'], $validated['facade_files']);
+
         foreach (['request_items', 'finishing_items'] as $itemsField) {
             $validated[$itemsField] = collect($validated[$itemsField] ?? [])
                 ->map(fn (array $item): array => [
                     'label' => $item['label'],
+                    'unit' => $item['unit'] ?? null,
+                    'quantity' => round((float) ($item['quantity'] ?? 1), 3),
+                    'unit_price' => (int) round($item['unit_price'] ?? $item['cost']),
                     'cost' => (int) round($item['cost']),
                 ])
                 ->values()
@@ -109,6 +154,8 @@ class RabProjectController extends Controller
 
         RabProject::create([
             ...$validated,
+            'floor_plan_files' => $this->storeAttachments($request, 'floor_plan_files'),
+            'facade_files' => $this->storeAttachments($request, 'facade_files'),
             'user_id' => $request->user()?->id,
             'status' => 'Draft',
         ]);
@@ -142,6 +189,14 @@ class RabProjectController extends Controller
         $validated = $request->validate([
             'customer_name' => ['required', 'string', 'max:255'],
             'village_name' => ['required', 'string', 'max:255'],
+            'rab_number' => ['nullable', 'string', 'max:255'],
+            'rab_date' => ['nullable', 'date'],
+            'project_name' => ['nullable', 'string', 'max:255'],
+            'project_address' => ['nullable', 'string', 'max:2000'],
+            'floor_plan_files' => ['nullable', 'array'],
+            'floor_plan_files.*' => ['file', 'mimes:jpg,jpeg,png,pdf', 'max:10240'],
+            'facade_files' => ['nullable', 'array'],
+            'facade_files.*' => ['file', 'mimes:jpg,jpeg,png,pdf', 'max:10240'],
             'length' => ['nullable', 'numeric', 'min:0'],
             'width' => ['nullable', 'numeric', 'min:0'],
             'building_area' => ['nullable', 'numeric', 'min:0'],
@@ -154,6 +209,17 @@ class RabProjectController extends Controller
         foreach (['price_per_meter', 'building_cost', 'grand_total'] as $moneyField) {
             $validated[$moneyField] = (int) round($validated[$moneyField] ?? 0);
         }
+
+        unset($validated['floor_plan_files'], $validated['facade_files']);
+
+        $validated['floor_plan_files'] = [
+            ...($rabProject->floor_plan_files ?? []),
+            ...$this->storeAttachments($request, 'floor_plan_files'),
+        ];
+        $validated['facade_files'] = [
+            ...($rabProject->facade_files ?? []),
+            ...$this->storeAttachments($request, 'facade_files'),
+        ];
 
         $rabProject->update($validated);
 
@@ -172,5 +238,28 @@ class RabProjectController extends Controller
         Inertia::flash('toast', ['type' => 'success', 'message' => 'RAB berhasil dihapus.']);
 
         return to_route('rab-project');
+    }
+
+    /**
+     * Store uploaded RAB attachments.
+     *
+     * @return array<int, array{name: string, path: string, url: string, mime: string|null}>
+     */
+    private function storeAttachments(Request $request, string $field): array
+    {
+        return collect($request->file($field, []))
+            ->filter(fn (mixed $file): bool => $file instanceof UploadedFile)
+            ->map(function (UploadedFile $file) use ($field): array {
+                $path = $file->store("rab/{$field}", 'public');
+
+                return [
+                    'name' => $file->getClientOriginalName(),
+                    'path' => $path,
+                    'url' => asset("storage/{$path}"),
+                    'mime' => $file->getClientMimeType(),
+                ];
+            })
+            ->values()
+            ->all();
     }
 }

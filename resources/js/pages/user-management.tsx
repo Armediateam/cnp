@@ -45,6 +45,7 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
+import InputError from '@/components/input-error';
 import { dashboard } from '@/routes';
 
 type UserRow = {
@@ -74,6 +75,7 @@ function UserFormDialog({
     const [name, setName] = useState(user?.name ?? '');
     const [email, setEmail] = useState(user?.email ?? '');
     const [password, setPassword] = useState('');
+    const [errors, setErrors] = useState<Record<string, string>>({});
     const [saving, setSaving] = useState(false);
     const isEdit = Boolean(user);
 
@@ -85,6 +87,7 @@ function UserFormDialog({
         setName(user.name);
         setEmail(user.email);
         setPassword('');
+        setErrors({});
     }, [user]);
 
     function handleOpenChange(nextOpen: boolean) {
@@ -99,11 +102,13 @@ function UserFormDialog({
             setName('');
             setEmail('');
             setPassword('');
+            setErrors({});
         }
     }
 
     function handleSubmit() {
         setSaving(true);
+        setErrors({});
 
         const payload = {
             name: name.trim(),
@@ -114,11 +119,17 @@ function UserFormDialog({
         const options = {
             preserveScroll: true,
             onSuccess: () => handleOpenChange(false),
+            onError: (validationErrors: Record<string, string>) =>
+                setErrors(validationErrors),
             onFinish: () => setSaving(false),
         };
 
         if (user) {
-            router.patch(`/dashboard/user-management/${user.id}`, payload, options);
+            router.patch(
+                `/dashboard/user-management/${user.id}`,
+                payload,
+                options,
+            );
             return;
         }
 
@@ -128,7 +139,9 @@ function UserFormDialog({
     const dialog = (
         <DialogContent className="sm:max-w-lg">
             <DialogHeader>
-                <DialogTitle>{isEdit ? 'Edit User' : 'Tambah User'}</DialogTitle>
+                <DialogTitle>
+                    {isEdit ? 'Edit User' : 'Tambah User'}
+                </DialogTitle>
                 <DialogDescription>
                     {isEdit
                         ? 'Perbarui nama, email, atau password user.'
@@ -144,6 +157,7 @@ function UserFormDialog({
                         onChange={(event) => setName(event.target.value)}
                         placeholder="Nama user"
                     />
+                    <InputError message={errors.name} />
                 </div>
                 <div className="grid gap-2">
                     <Label htmlFor="email">Email</Label>
@@ -154,6 +168,7 @@ function UserFormDialog({
                         onChange={(event) => setEmail(event.target.value)}
                         placeholder="email@example.com"
                     />
+                    <InputError message={errors.email} />
                 </div>
                 <div className="grid gap-2">
                     <Label htmlFor="password">
@@ -166,10 +181,14 @@ function UserFormDialog({
                         onChange={(event) => setPassword(event.target.value)}
                         placeholder="Minimal 8 karakter"
                     />
+                    <InputError message={errors.password} />
                 </div>
             </div>
             <DialogFooter>
-                <Button variant="outline" onClick={() => handleOpenChange(false)}>
+                <Button
+                    variant="outline"
+                    onClick={() => handleOpenChange(false)}
+                >
                     Batal
                 </Button>
                 <Button disabled={saving} onClick={handleSubmit}>
@@ -212,7 +231,9 @@ function UserViewDialog({
             <DialogContent className="sm:max-w-lg">
                 <DialogHeader>
                     <DialogTitle>Detail User</DialogTitle>
-                    <DialogDescription>Informasi user yang terdaftar.</DialogDescription>
+                    <DialogDescription>
+                        Informasi user yang terdaftar.
+                    </DialogDescription>
                 </DialogHeader>
                 {user && (
                     <div className="grid gap-3 rounded-lg border bg-muted/30 p-4 text-sm">
@@ -225,14 +246,23 @@ function UserViewDialog({
                             <span className="font-medium">{user.email}</span>
                         </div>
                         <div className="flex justify-between gap-4">
-                            <span className="text-muted-foreground">Status</span>
-                            <Badge variant="outline" className={statusClass(user.status)}>
+                            <span className="text-muted-foreground">
+                                Status
+                            </span>
+                            <Badge
+                                variant="outline"
+                                className={statusClass(user.status)}
+                            >
                                 {user.status}
                             </Badge>
                         </div>
                         <div className="flex justify-between gap-4">
-                            <span className="text-muted-foreground">Dibuat</span>
-                            <span className="font-medium">{user.createdAt ?? '-'}</span>
+                            <span className="text-muted-foreground">
+                                Dibuat
+                            </span>
+                            <span className="font-medium">
+                                {user.createdAt ?? '-'}
+                            </span>
                         </div>
                     </div>
                 )}
@@ -341,7 +371,9 @@ export default function UserManagement({ users = [] }: { users: UserRow[] }) {
                         <Search className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
                         <Input
                             value={search}
-                            onChange={(event) => handleSearch(event.target.value)}
+                            onChange={(event) =>
+                                handleSearch(event.target.value)
+                            }
                             placeholder="Cari user..."
                             className="pl-9"
                         />
@@ -364,14 +396,23 @@ export default function UserManagement({ users = [] }: { users: UserRow[] }) {
                             {visibleUsers.length > 0 ? (
                                 visibleUsers.map((user) => (
                                     <TableRow key={user.id}>
-                                        <TableCell className="font-medium">{user.name}</TableCell>
+                                        <TableCell className="font-medium">
+                                            {user.name}
+                                        </TableCell>
                                         <TableCell>{user.email}</TableCell>
                                         <TableCell>
-                                            <Badge variant="outline" className={statusClass(user.status)}>
+                                            <Badge
+                                                variant="outline"
+                                                className={statusClass(
+                                                    user.status,
+                                                )}
+                                            >
                                                 {user.status}
                                             </Badge>
                                         </TableCell>
-                                        <TableCell>{user.createdAt ?? '-'}</TableCell>
+                                        <TableCell>
+                                            {user.createdAt ?? '-'}
+                                        </TableCell>
                                         <TableCell className="text-right">
                                             <DropdownMenu>
                                                 <DropdownMenuTrigger asChild>
@@ -381,20 +422,35 @@ export default function UserManagement({ users = [] }: { users: UserRow[] }) {
                                                         className="size-8 text-muted-foreground"
                                                     >
                                                         <MoreVertical />
-                                                        <span className="sr-only">Buka menu</span>
+                                                        <span className="sr-only">
+                                                            Buka menu
+                                                        </span>
                                                     </Button>
                                                 </DropdownMenuTrigger>
-                                                <DropdownMenuContent align="end" className="w-36">
-                                                    <DropdownMenuItem onClick={() => setViewUser(user)}>
+                                                <DropdownMenuContent
+                                                    align="end"
+                                                    className="w-36"
+                                                >
+                                                    <DropdownMenuItem
+                                                        onClick={() =>
+                                                            setViewUser(user)
+                                                        }
+                                                    >
                                                         View
                                                     </DropdownMenuItem>
-                                                    <DropdownMenuItem onClick={() => setEditUser(user)}>
+                                                    <DropdownMenuItem
+                                                        onClick={() =>
+                                                            setEditUser(user)
+                                                        }
+                                                    >
                                                         Edit
                                                     </DropdownMenuItem>
                                                     <DropdownMenuSeparator />
                                                     <DropdownMenuItem
                                                         variant="destructive"
-                                                        onClick={() => setDeleteUser(user)}
+                                                        onClick={() =>
+                                                            setDeleteUser(user)
+                                                        }
                                                     >
                                                         Delete
                                                     </DropdownMenuItem>
@@ -405,7 +461,10 @@ export default function UserManagement({ users = [] }: { users: UserRow[] }) {
                                 ))
                             ) : (
                                 <TableRow>
-                                    <TableCell colSpan={5} className="h-24 text-center text-muted-foreground">
+                                    <TableCell
+                                        colSpan={5}
+                                        className="h-24 text-center text-muted-foreground"
+                                    >
                                         Tidak ada data.
                                     </TableCell>
                                 </TableRow>
@@ -416,20 +475,34 @@ export default function UserManagement({ users = [] }: { users: UserRow[] }) {
 
                 <div className="flex flex-col gap-4 text-sm text-muted-foreground lg:flex-row lg:items-center lg:justify-between">
                     <div>
-                        Menampilkan {from} - {to} dari {filteredUsers.length} data
+                        Menampilkan {from} - {to} dari {filteredUsers.length}{' '}
+                        data
                     </div>
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
                         <div className="flex items-center gap-2">
-                            <Label htmlFor="users-per-page" className="text-sm font-medium text-foreground">
+                            <Label
+                                htmlFor="users-per-page"
+                                className="text-sm font-medium text-foreground"
+                            >
                                 Data per halaman
                             </Label>
-                            <Select value={`${pageSize}`} onValueChange={handlePageSize}>
-                                <SelectTrigger id="users-per-page" size="sm" className="w-20">
+                            <Select
+                                value={`${pageSize}`}
+                                onValueChange={handlePageSize}
+                            >
+                                <SelectTrigger
+                                    id="users-per-page"
+                                    size="sm"
+                                    className="w-20"
+                                >
                                     <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent side="top">
                                     {pageSizeOptions.map((option) => (
-                                        <SelectItem key={option} value={`${option}`}>
+                                        <SelectItem
+                                            key={option}
+                                            value={`${option}`}
+                                        >
                                             {option}
                                         </SelectItem>
                                     ))}
@@ -438,7 +511,7 @@ export default function UserManagement({ users = [] }: { users: UserRow[] }) {
                         </div>
 
                         <div className="flex items-center gap-2">
-                            <span className="whitespace-nowrap text-sm font-medium text-foreground">
+                            <span className="text-sm font-medium whitespace-nowrap text-foreground">
                                 Halaman {currentPage + 1} dari {pageCount}
                             </span>
                             <Button
@@ -455,7 +528,11 @@ export default function UserManagement({ users = [] }: { users: UserRow[] }) {
                                 size="icon"
                                 className="size-8"
                                 disabled={currentPage === 0}
-                                onClick={() => setPageIndex((page) => Math.max(page - 1, 0))}
+                                onClick={() =>
+                                    setPageIndex((page) =>
+                                        Math.max(page - 1, 0),
+                                    )
+                                }
                             >
                                 <ChevronLeft />
                             </Button>
@@ -464,7 +541,11 @@ export default function UserManagement({ users = [] }: { users: UserRow[] }) {
                                 size="icon"
                                 className="size-8"
                                 disabled={currentPage >= pageCount - 1}
-                                onClick={() => setPageIndex((page) => Math.min(page + 1, pageCount - 1))}
+                                onClick={() =>
+                                    setPageIndex((page) =>
+                                        Math.min(page + 1, pageCount - 1),
+                                    )
+                                }
                             >
                                 <ChevronRight />
                             </Button>

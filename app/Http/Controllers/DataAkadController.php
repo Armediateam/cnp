@@ -6,31 +6,34 @@ use App\Models\PurchaseForm;
 use Inertia\Inertia;
 use Inertia\Response;
 
-class PublicFormDashboardController extends Controller
+class DataAkadController extends Controller
 {
     /**
-     * Show public form submissions in dashboard.
+     * Show Data Akad in dashboard.
      */
     public function __invoke(): Response
     {
-        return Inertia::render('public-forms', [
+        return Inertia::render('data-akad', [
             'metrics' => [
-                'total' => PurchaseForm::count(),
+                'total' => PurchaseForm::where('is_akad', true)->count(),
                 'today' => PurchaseForm::query()
+                    ->where('is_akad', true)
                     ->whereDate('created_at', today())
                     ->count(),
                 'thisMonth' => PurchaseForm::query()
+                    ->where('is_akad', true)
                     ->whereMonth('created_at', now()->month)
                     ->whereYear('created_at', now()->year)
                     ->count(),
                 'withAttachments' => PurchaseForm::query()
+                    ->where('is_akad', true)
                     ->where(fn ($query) => $query
                         ->whereNotNull('ktp_photo_path')
                         ->orWhereNotNull('sketch_photo_path'))
                     ->count(),
             ],
             'purchaseForms' => PurchaseForm::query()
-                ->where('is_akad', false)
+                ->where('is_akad', true)
                 ->latest()
                 ->get()
                 ->map(fn (PurchaseForm $item): array => [
@@ -62,17 +65,5 @@ class PublicFormDashboardController extends Controller
                     'createdAt' => $item->created_at?->format('d M Y H:i'),
                 ]),
         ]);
-    }
-
-    public function markAsAkad(PurchaseForm $purchaseForm): \Illuminate\Http\RedirectResponse
-    {
-        $purchaseForm->update(['is_akad' => true]);
-
-        Inertia::flash('toast', [
-            'type' => 'success',
-            'message' => 'Prospek berhasil dimasukkan ke Berkas Akad.'
-        ]);
-
-        return back();
     }
 }

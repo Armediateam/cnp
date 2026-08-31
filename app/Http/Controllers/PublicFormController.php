@@ -36,13 +36,15 @@ class PublicFormController extends Controller
             'spouse_name' => ['nullable', 'string', 'max:255'],
             'spouse_phone' => ['nullable', 'string', 'max:50'],
             'ktp_photo' => ['nullable', 'file', 'image', 'max:4096'],
+            'rab_file' => ['nullable', 'file', 'mimes:pdf', 'max:10240'],
             'sketch_photo' => ['nullable', 'file', 'image', 'max:4096'],
             'region' => ['nullable', 'string', 'max:255'],
         ]);
 
         $validated['ktp_photo_path'] = $request->file('ktp_photo')?->store('purchase-forms/ktp', 'public');
+        $validated['rab_file_path'] = $request->file('rab_file')?->store('purchase-forms/rab', 'public');
         $validated['sketch_photo_path'] = $request->file('sketch_photo')?->store('purchase-forms/sketches', 'public');
-        unset($validated['ktp_photo'], $validated['sketch_photo']);
+        unset($validated['ktp_photo'], $validated['rab_file'], $validated['sketch_photo']);
 
         PurchaseForm::create($validated);
 

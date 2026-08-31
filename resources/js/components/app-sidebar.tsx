@@ -32,12 +32,17 @@ const mainNavItems: NavItem[] = [
     },
     {
         title: 'RAB Project',
-        href: '/dashboard/rab-project',
+        href: '/rab-project',
         icon: FileText,
     },
     {
-        title: 'Pengajuan Pembelian',
+        title: 'Prospek Konsumen',
         href: '/dashboard/pengajuan-pembelian',
+        icon: ClipboardList,
+    },
+    {
+        title: 'Data Akad',
+        href: '/dashboard/data-akad',
         icon: ClipboardList,
     },
     {

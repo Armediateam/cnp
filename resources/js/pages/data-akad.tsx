@@ -1,12 +1,10 @@
-import { Head, router } from '@inertiajs/react';
+import { Head } from '@inertiajs/react';
 import {
     Card,
     CardContent,
     CardHeader,
     CardTitle,
 } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Check } from 'lucide-react';
 import {
     Table,
     TableBody,
@@ -50,7 +48,7 @@ type Metrics = {
     withAttachments: number;
 };
 
-export default function PublicForms({
+export default function DataAkad({
     metrics = {
         total: 0,
         today: 0,
@@ -64,14 +62,14 @@ export default function PublicForms({
 }) {
     return (
         <>
-            <Head title="Prospek Konsumen" />
+            <Head title="Data Akad" />
             <div className="flex flex-col gap-4 p-4">
                 <div>
                     <h1 className="text-2xl font-semibold">
-                        Prospek Konsumen
+                        Data Akad
                     </h1>
                     <p className="mt-1 text-sm text-muted-foreground">
-                        Data yang masuk dari Form Beli di halaman publik yang belum menjadi akad.
+                        Daftar konsumen yang sudah menjadi akad / order pembangunan.
                     </p>
                 </div>
 
@@ -130,7 +128,6 @@ export default function PublicForms({
                                 <TableHead>Pasangan</TableHead>
                                 <TableHead>File</TableHead>
                                 <TableHead>Dibuat</TableHead>
-                                <TableHead className="w-[100px]"></TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -212,27 +209,12 @@ export default function PublicForms({
                                         <TableCell>
                                             {item.createdAt ?? '-'}
                                         </TableCell>
-                                        <TableCell>
-                                            <Button
-                                                size="sm"
-                                                variant="outline"
-                                                className="w-full gap-2 text-green-600 hover:text-green-700"
-                                                onClick={() => {
-                                                    if (confirm('Jadikan berkas akad?')) {
-                                                        router.patch(`/dashboard/pengajuan-pembelian/${item.id}/akad`);
-                                                    }
-                                                }}
-                                            >
-                                                <Check className="size-4" />
-                                                <span>Akad</span>
-                                            </Button>
-                                        </TableCell>
                                     </TableRow>
                                 ))
                             ) : (
                                 <TableRow>
                                     <TableCell
-                                        colSpan={9}
+                                        colSpan={8}
                                         className="h-24 text-center text-muted-foreground"
                                     >
                                         Belum ada data.
@@ -247,15 +229,15 @@ export default function PublicForms({
     );
 }
 
-PublicForms.layout = {
+DataAkad.layout = {
     breadcrumbs: [
         {
             title: 'Dashboard',
             href: dashboard(),
         },
         {
-            title: 'Prospek Konsumen',
-            href: '/dashboard/pengajuan-pembelian',
+            title: 'Data Akad',
+            href: '/dashboard/data-akad',
         },
     ],
 };

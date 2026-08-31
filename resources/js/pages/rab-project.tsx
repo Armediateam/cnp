@@ -2711,16 +2711,3 @@ export default function RabProject({
         </>
     );
 }
-
-RabProject.layout = {
-    breadcrumbs: [
-        {
-            title: 'Dashboard',
-            href: dashboard(),
-        },
-        {
-            title: 'RAB Project',
-            href: '/dashboard/rab-project',
-        },
-    ],
-};

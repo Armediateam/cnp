@@ -27,8 +27,10 @@ use Illuminate\Database\Eloquent\Model;
     'spouse_name',
     'spouse_phone',
     'ktp_photo_path',
+    'rab_file_path',
     'sketch_photo_path',
     'region',
+    'is_akad',
 ])]
 class PurchaseForm extends Model
 {
@@ -37,6 +39,7 @@ class PurchaseForm extends Model
         return [
             'birth_date' => 'date',
             'age' => 'integer',
+            'is_akad' => 'boolean',
         ];
     }
 }

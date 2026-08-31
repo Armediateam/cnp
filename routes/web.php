@@ -24,14 +24,17 @@ Route::inertia('alur-kerjasama-pesanan', 'alur-kerjasama-pesanan')->name('alur-k
 Route::inertia('spesifikasi-material-yang-dipakai', 'spesifikasi-material-yang-dipakai')->name('spesifikasi-material-yang-dipakai');
 Route::inertia('skema-pembayaran', 'skema-pembayaran')->name('skema-pembayaran');
 
+Route::get('rab-project', [RabProjectController::class, 'index'])->name('rab-project');
+Route::post('rab-project', [RabProjectController::class, 'store'])->name('rab-project.store');
+Route::patch('rab-project/{rabProject}', [RabProjectController::class, 'update'])->name('rab-project.update');
+Route::patch('rab-project/{rabProject}/status', [RabProjectController::class, 'updateStatus'])->name('rab-project.status');
+Route::delete('rab-project/{rabProject}', [RabProjectController::class, 'destroy'])->name('rab-project.destroy');
+
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', DashboardController::class)->name('dashboard');
-    Route::get('dashboard/rab-project', [RabProjectController::class, 'index'])->name('rab-project');
-    Route::post('dashboard/rab-project', [RabProjectController::class, 'store'])->name('rab-project.store');
-    Route::patch('dashboard/rab-project/{rabProject}', [RabProjectController::class, 'update'])->name('rab-project.update');
-    Route::patch('dashboard/rab-project/{rabProject}/status', [RabProjectController::class, 'updateStatus'])->name('rab-project.status');
-    Route::delete('dashboard/rab-project/{rabProject}', [RabProjectController::class, 'destroy'])->name('rab-project.destroy');
     Route::get('dashboard/pengajuan-pembelian', PublicFormDashboardController::class)->name('purchase-submissions');
+    Route::patch('dashboard/pengajuan-pembelian/{purchaseForm}/akad', [PublicFormDashboardController::class, 'markAsAkad'])->name('purchase-submissions.akad');
+    Route::get('dashboard/data-akad', [\App\Http\Controllers\DataAkadController::class, '__invoke'])->name('data-akad');
     Route::get('dashboard/master-data', [MasterDataController::class, 'index'])->name('master-data');
     Route::post('dashboard/master-data', [MasterDataController::class, 'store'])->name('master-data.store');
     Route::patch('dashboard/master-data/{masterDataItem}', [MasterDataController::class, 'update'])->name('master-data.update');

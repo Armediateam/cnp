@@ -228,6 +228,16 @@ export default function FormBeli() {
                             </div>
 
                             <div className="grid gap-2">
+                                <Label htmlFor="file-rab">File RAB</Label>
+                                <Input
+                                    id="file-rab"
+                                    name="rab_file"
+                                    type="file"
+                                    accept=".pdf"
+                                />
+                            </div>
+
+                            <div className="grid gap-2">
                                 <Label htmlFor="foto-denah">
                                     Foto Denah / Sketsa
                                 </Label>

@@ -7,6 +7,7 @@ use App\Http\Controllers\PublicFormController;
 use App\Http\Controllers\PublicFormDashboardController;
 use App\Http\Controllers\UserManagementController;
 use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
 
 Route::get('/', function () {
     $cards = \App\Models\HomepageCard::where('is_active', true)->orderBy('order')->get();

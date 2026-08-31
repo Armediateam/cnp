@@ -34,12 +34,6 @@ export default function PublicInfoPage({
                         </p>
                         <div className="flex flex-wrap gap-3">
                             <Button asChild>
-                                <Link href="/form-beli">
-                                    Form Beli
-                                    <ArrowRight />
-                                </Link>
-                            </Button>
-                            <Button asChild variant="outline">
                                 <Link href="/kontak">Hubungi Admin</Link>
                             </Button>
                         </div>

@@ -18,7 +18,6 @@ const homeNavItems = [
     { title: 'Ongkir', href: '/ongkir' },
     { title: 'Biaya', href: '/biaya' },
     { title: 'Buat RAB', href: '/rab-project' },
-    { title: 'Form Beli', href: '/form-beli' },
     { title: 'Tanya Jawab', href: '/tanya-jawab' },
     { title: 'Kontak', href: '/kontak' },
 ];

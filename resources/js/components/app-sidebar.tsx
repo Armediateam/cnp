@@ -55,6 +55,11 @@ const mainNavItems: NavItem[] = [
         href: '/dashboard/user-management',
         icon: UserCog,
     },
+    {
+        title: 'Pengaturan Beranda',
+        href: '/dashboard/homepage-settings',
+        icon: LayoutGrid,
+    },
 ];
 
 const footerNavItems: NavItem[] = [

@@ -8,7 +8,12 @@ use App\Http\Controllers\PublicFormDashboardController;
 use App\Http\Controllers\UserManagementController;
 use Illuminate\Support\Facades\Route;
 
-Route::inertia('/', 'welcome')->name('home');
+Route::get('/', function () {
+    $cards = \App\Models\HomepageCard::where('is_active', true)->orderBy('order')->get();
+    return Inertia::render('welcome', [
+        'cards' => $cards,
+    ]);
+})->name('home');
 Route::inertia('ongkir', 'ongkir')->name('ongkir');
 Route::inertia('biaya', 'biaya')->name('biaya');
 Route::inertia('form-beli', 'form-beli')->name('form-beli');
@@ -43,6 +48,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('dashboard/user-management', [UserManagementController::class, 'store'])->name('user-management.store');
     Route::patch('dashboard/user-management/{user}', [UserManagementController::class, 'update'])->name('user-management.update');
     Route::delete('dashboard/user-management/{user}', [UserManagementController::class, 'destroy'])->name('user-management.destroy');
+
+    Route::get('dashboard/homepage-settings', [\App\Http\Controllers\HomepageSettingController::class, 'index'])->name('homepage-settings');
+    Route::post('dashboard/homepage-settings', [\App\Http\Controllers\HomepageSettingController::class, 'store'])->name('homepage-settings.store');
+    Route::post('dashboard/homepage-settings/{card}', [\App\Http\Controllers\HomepageSettingController::class, 'update'])->name('homepage-settings.update');
+    Route::delete('dashboard/homepage-settings/{card}', [\App\Http\Controllers\HomepageSettingController::class, 'destroy'])->name('homepage-settings.destroy');
 });
 
 require __DIR__.'/settings.php';

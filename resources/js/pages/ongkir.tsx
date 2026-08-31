@@ -11,44 +11,12 @@ import {
 } from '@/components/ui/select';
 
 const wilayahOptions = [
-    'Aceh',
-    'Sumatera Utara',
-    'Sumatera Barat',
-    'Riau',
-    'Jambi',
-    'Sumatera Selatan',
-    'Bengkulu',
-    'Lampung',
-    'Kepulauan Bangka Belitung',
-    'Kepulauan Riau',
-    'DKI Jakarta',
-    'Jawa Barat',
-    'Jawa Tengah',
-    'DI Yogyakarta',
-    'Jawa Timur',
-    'Banten',
-    'Bali',
-    'Nusa Tenggara Barat',
-    'Nusa Tenggara Timur',
-    'Kalimantan Barat',
-    'Kalimantan Tengah',
-    'Kalimantan Selatan',
-    'Kalimantan Timur',
-    'Kalimantan Utara',
-    'Sulawesi Utara',
-    'Sulawesi Tengah',
-    'Sulawesi Selatan',
-    'Sulawesi Tenggara',
-    'Gorontalo',
-    'Sulawesi Barat',
-    'Maluku',
-    'Maluku Utara',
-    'Papua Barat',
-    'Papua Barat Daya',
-    'Papua',
-    'Papua Selatan',
-    'Papua Tengah',
-    'Papua Pegunungan',
+    'Bandar Lampung',
+    'Lampung Selatan',
+    'Lampung Barat',
+    'Lampung Tengah',
+    'Lampung Utara',
+    'Tanggamus',
 ];
 
 function formatRupiah(value: number) {
@@ -65,15 +33,12 @@ export default function Ongkir() {
 
     const distance = Number(jarak) || 0;
     const totals = useMemo(() => {
-        const baseRate = wilayah.startsWith('Papua') ? 25000 : 15000;
-        const nonFinishing = distance * baseRate;
-        const interlock = distance * (baseRate + 5000);
+        const nonFinishing = distance * 35000;
 
         return {
             nonFinishing,
-            interlock,
         };
-    }, [distance, wilayah]);
+    }, [distance]);
 
     return (
         <>
@@ -125,18 +90,10 @@ export default function Ongkir() {
                             <h2 className="text-lg font-semibold">Ongkir</h2>
                             <div className="flex items-center justify-between gap-4 text-sm">
                                 <span className="text-muted-foreground">
-                                    Total Ongkir Rumah Non Finishing
+                                    Total Ongkir (Rp 35.000 / km)
                                 </span>
                                 <span className="font-semibold">
                                     {formatRupiah(totals.nonFinishing)}
-                                </span>
-                            </div>
-                            <div className="flex items-center justify-between gap-4 text-sm">
-                                <span className="text-muted-foreground">
-                                    Total Ongkir Rumah Interlock
-                                </span>
-                                <span className="font-semibold">
-                                    {formatRupiah(totals.interlock)}
                                 </span>
                             </div>
                         </div>

@@ -114,7 +114,7 @@ export default function HomepageSettings({ cards }: { cards: HomepageCardRow[] }
     };
 
     return (
-        <div className="grid gap-6">
+        <div className="flex flex-col gap-4 p-4">
             <Head title="Pengaturan Beranda" />
             <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
                 <div className="grid gap-1">

@@ -25,9 +25,8 @@ return new class extends Migration
         });
 
         DB::table('master_data_items')->insert([
-            ['category' => 'structure_specification', 'name' => 'Besi S', 'value' => null, 'unit' => null, 'status' => 'Active', 'created_at' => now(), 'updated_at' => now()],
-            ['category' => 'structure_specification', 'name' => 'Besi M', 'value' => null, 'unit' => null, 'status' => 'Active', 'created_at' => now(), 'updated_at' => now()],
             ['category' => 'structure_specification', 'name' => 'Besi L', 'value' => null, 'unit' => null, 'status' => 'Active', 'created_at' => now(), 'updated_at' => now()],
+            ['category' => 'structure_specification', 'name' => 'Besi 10', 'value' => null, 'unit' => null, 'status' => 'Active', 'created_at' => now(), 'updated_at' => now()],
             ['category' => 'structure_specification', 'name' => '4D10 + Begel D8-15', 'value' => null, 'unit' => null, 'status' => 'Active', 'created_at' => now(), 'updated_at' => now()],
             ['category' => 'request_cost', 'name' => 'Atap model limas', 'value' => 0, 'unit' => 'item', 'status' => 'Active', 'created_at' => now(), 'updated_at' => now()],
             ['category' => 'request_cost', 'name' => 'Kanopi', 'value' => 0, 'unit' => 'item', 'status' => 'Active', 'created_at' => now(), 'updated_at' => now()],

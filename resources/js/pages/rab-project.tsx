@@ -221,9 +221,8 @@ const fallbackFinishingCatalogItems: MasterDataRow[] = [
 ];
 
 const fallbackStructureSpecifications = [
-    'Besi S',
-    'Besi M',
     'Besi L',
+    'Besi 10',
     '4D10 + Begel D8-15',
     '4D12 + Begel D8-15',
     '6D12 + Begel D8-15',

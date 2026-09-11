@@ -33,7 +33,7 @@ export default function Ongkir() {
 
     const distance = Number(jarak) || 0;
     const totals = useMemo(() => {
-        const nonFinishing = distance * 35000;
+        const nonFinishing = distance * 35000 * 2;
 
         return {
             nonFinishing,
@@ -90,7 +90,7 @@ export default function Ongkir() {
                             <h2 className="text-lg font-semibold">Ongkir</h2>
                             <div className="flex items-center justify-between gap-4 text-sm">
                                 <span className="text-muted-foreground">
-                                    Total Ongkir (Rp 35.000 / km)
+                                    Total Ongkir 2 rit ( sampai pembangunan selesai )
                                 </span>
                                 <span className="font-semibold">
                                     {formatRupiah(totals.nonFinishing)}

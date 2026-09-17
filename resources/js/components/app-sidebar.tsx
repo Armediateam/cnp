@@ -32,7 +32,7 @@ const mainNavItems: NavItem[] = [
     },
     {
         title: 'RAB Project',
-        href: '/rab-project',
+        href: '/dashboard/rab-project',
         icon: FileText,
     },
     {

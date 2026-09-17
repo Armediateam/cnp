@@ -28,7 +28,6 @@ createInertiaApp({
                 'alur-kerjasama-pesanan',
                 'spesifikasi-material-yang-dipakai',
                 'skema-pembayaran',
-                'rab-project',
             ].includes(name):
                 return HomeLayout;
             case name.startsWith('auth/'):

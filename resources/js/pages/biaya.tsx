@@ -11,7 +11,11 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 
-const tipeOptions = ['Small', 'Medium', 'Large'];
+const tipeOptions = ['Standar', 'Premium'];
+const besiByTipe: Record<string, string> = {
+    Standar: 'Besi L',
+    Premium: 'Besi 4 Diameter 10',
+};
 const wilayahOptions = [
     'Bandar Lampung',
     'Lampung Selatan',
@@ -31,7 +35,8 @@ export default function Biaya() {
     const [ruangKeluarga, setRuangKeluarga] = useState('1');
     const [ruangDapur, setRuangDapur] = useState('1');
     const [ongkirMaterial, setOngkirMaterial] = useState('0');
-    const [type, setType] = useState('Medium');
+    const [type, setType] = useState(tipeOptions[0]);
+    const besi = besiByTipe[type];
     const [region, setRegion] = useState('Bandar Lampung');
     const [showResult, setShowResult] = useState(false);
 
@@ -297,6 +302,10 @@ export default function Biaya() {
                                         <tr>
                                             <td className="py-1 w-1/3">Pondasi</td>
                                             <td className="py-1">: Batu belah</td>
+                                        </tr>
+                                        <tr>
+                                            <td className="py-1 w-1/3">Besi</td>
+                                            <td className="py-1">: {besi}</td>
                                         </tr>
                                         <tr>
                                             <td className="py-1 w-1/3">Dinding</td>
